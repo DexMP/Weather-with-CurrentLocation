@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">GPS метка</string>
+    <string name="error_gps_on_denied">Для работы приложения требуется включенный GPS!</string>
+    <string name="turn_on_gps">Включить GPS</string>
+    <string name="grant_permission">Предоставить разрешение</string>
+    <string name="error_gps_permission_denied">Для работы приложения требуется предоставить права на получение геолокации</string>
+    <string name="error_denied_permanently">Разрешите приложению доступ к геолокации. Без него приложение не сможет начать работу</string>
+    <string name="btn_open_setting">Перейти в настройки</string>
+    <string name="error_internet_unavailable">Подключение к интернету отсутствует. Работа приложения приостановлена</string>
+    <string name="btn_check_connection">Проверить подключение</string>
+    <string name="error_conn_failed">Сайт сбора местоположения не отвечает. Работа приложения приостановлена</string>
+</resources>
