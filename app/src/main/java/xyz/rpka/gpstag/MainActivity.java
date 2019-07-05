@@ -311,10 +311,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUI() {
         if (currentLocation != null) {
-
-            currentLocationView.setText("Широта: " + currentLocation.getLatitude() + "\n" + "Долгота: " + currentLocation.getLongitude());
-            lastUpdateView.setText("Последняя отправка: " + lastUpdateTime);
-
             char lat = (char) currentLocation.getLatitude();
             char lon = (char) currentLocation.getLongitude();
 
@@ -330,6 +326,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 public void onResponse(Call<WearherData> call, retrofit2.Response<WearherData> response) {
                     WearherData wearherData = response.body();
 
+                    currentLocationView.setText("Широта: " + currentLocation.getLatitude() + "\n" + "Долгота: " + currentLocation.getLongitude());
+                    lastUpdateView.setText("Последняя отправка: " + lastUpdateTime);
+                    currentLocationView.setText(wearherData.main.getTemp() + "C°");
                 }
 
                 @Override
@@ -338,6 +337,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
             });
 
+            currentWeatherView.setVisibility(View.VISIBLE);
             currentLocationView.setVisibility(View.VISIBLE);
             lastUpdateView.setVisibility(View.VISIBLE);
         } else {
@@ -426,6 +426,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void hideUI() {
+        currentWeatherView.setVisibility(View.GONE);
         currentLocationView.setVisibility(View.GONE);
         lastUpdateView.setVisibility(View.GONE);
     }
