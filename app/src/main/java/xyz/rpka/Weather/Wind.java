@@ -1,4 +1,4 @@
-package xyz.rpka.gpstag;
+package xyz.rpka.Weather;
 
 class Wind {
     private float speed;

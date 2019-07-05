@@ -1,4 +1,4 @@
-package xyz.rpka.gpstag;
+package xyz.rpka.Weather;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

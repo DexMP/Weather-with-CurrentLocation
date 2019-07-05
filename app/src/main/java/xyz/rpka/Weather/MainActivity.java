@@ -1,4 +1,4 @@
-package xyz.rpka.gpstag;
+package xyz.rpka.Weather;
 
 import android.Manifest;
 import android.app.Activity;
