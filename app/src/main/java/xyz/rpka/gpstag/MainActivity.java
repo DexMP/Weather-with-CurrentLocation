@@ -51,6 +51,11 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     /* Constants */
@@ -65,8 +70,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int ERROR_CONNECTION_FAILED     = 40;
     public static final int ERROR_INTERNET_UNAVAILABLE  = 50;
     private static final String baseURL                 = "http://email.yaxroma.org/data.php";
+    public static final String WEATHER_KEY = "14694abc40a51e1b28c053fdea1faa06";
 
     /* Widgets */
+    private TextView currentWeatherView;
     private TextView currentLocationView;
     private TextView lastUpdateView;
     private View mainContent;
@@ -97,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initUI();
+        initData();
         initLocationServices();
         if(!isPermissionGranted()) {
             askForPermission();
@@ -193,7 +200,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
 
-    private void initUI() {
+    private void initData() {
         connectivityManager     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         currentLocationView     = findViewById(R.id.currentLocation);
         lastUpdateView          = findViewById(R.id.lastUpdate);
@@ -201,6 +208,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         buttonResolver          = findViewById(R.id.btnResolveError);
         errorIconView           = findViewById(R.id.errorIcon);
         mainContent             = findViewById(R.id.root);
+        currentWeatherView      = findViewById(R.id.currentWeather);
 
         buttonResolver.setOnClickListener(this);
     }
@@ -306,6 +314,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             currentLocationView.setText("Широта: " + currentLocation.getLatitude() + "\n" + "Долгота: " + currentLocation.getLongitude());
             lastUpdateView.setText("Последняя отправка: " + lastUpdateTime);
+
+            char lat = (char) currentLocation.getLatitude();
+            char lon = (char) currentLocation.getLongitude();
+
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://samples.openweathermap.org/data/2.5")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+
+            Api api = retrofit.create(Api.class);
+            Call<WearherData> call = api.getDataWeather(lat, lon, WEATHER_KEY);
+            call.enqueue(new Callback<WearherData>() {
+                @Override
+                public void onResponse(Call<WearherData> call, retrofit2.Response<WearherData> response) {
+                    WearherData wearherData = response.body();
+
+                }
+
+                @Override
+                public void onFailure(Call<WearherData> call, Throwable t) {
+
+                }
+            });
 
             currentLocationView.setVisibility(View.VISIBLE);
             lastUpdateView.setVisibility(View.VISIBLE);
