@@ -23,7 +23,7 @@
             android:textColor="@color/colorPrimaryText"
             android:textSize="18sp"
             android:layout_gravity="center"
-            android:visibility="visible"
+            android:visibility="gone"
             android:gravity="center"/>
 
         <TextView
@@ -33,7 +33,7 @@
             android:textColor="@color/colorPrimaryText"
             android:textSize="18sp"
             android:layout_gravity="center"
-            android:visibility="visible"
+            android:visibility="gone"
             android:gravity="center"/>
 
     </LinearLayout>
@@ -55,7 +55,7 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="125dp"
         android:src="@drawable/ic_gps_off"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/errorTitle"
@@ -66,7 +66,7 @@
         android:layout_marginTop="50dp"
         android:text="@string/error_gps_on_denied"
         android:textSize="18sp"
-        android:visibility="visible" />
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btnResolveError"
@@ -76,6 +76,6 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="50dp"
         android:text="Включить GPS"
-        android:visibility="visible"/>
+        android:visibility="gone"/>
 
 </FrameLayout>
