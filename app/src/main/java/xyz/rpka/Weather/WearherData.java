@@ -1,61 +1,49 @@
 package xyz.rpka.Weather;
 
-import java.util.ArrayList;
-
 class WearherData {
-    Coord coord;
-    ArrayList<GetWeather> weather = new ArrayList <GetWeather> ();
-    private String base;
-    Main main;
-    Wind wind;
-    Clouds clouds;
-    private float dt;
-    Sys sys;
-    private float id;
-    private String name;
-    private float cod;
+    private float latitude;
+    private float longitude;
+    private String timezone;
+    Currently currently;
+    Minutely minutely;
+    Hourly hourly;
+    Daily daily;
+    Flags flags;
+    private float offset;
 
-    public Coord getCoord() {
-        return coord;
+    public float getLatitude() {
+        return latitude;
     }
 
-    public ArrayList<GetWeather> getWeather() {
-        return weather;
+    public float getLongitude() {
+        return longitude;
     }
 
-    public String getBase() {
-        return base;
+    public String getTimezone() {
+        return timezone;
     }
 
-    public Main getMain() {
-        return main;
+    public Currently getCurrently() {
+        return currently;
     }
 
-    public Wind getWind() {
-        return wind;
+    public Minutely getMinutely() {
+        return minutely;
     }
 
-    public Clouds getClouds() {
-        return clouds;
+    public Hourly getHourly() {
+        return hourly;
     }
 
-    public float getDt() {
-        return dt;
+    public Daily getDaily() {
+        return daily;
     }
 
-    public Sys getSys() {
-        return sys;
+    public Flags getFlags() {
+        return flags;
     }
 
-    public float getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public float getCod() {
-        return cod;
+    public float getOffset() {
+        return offset;
     }
 }

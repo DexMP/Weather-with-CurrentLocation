@@ -23,12 +23,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -47,6 +41,7 @@ import com.google.android.gms.tasks.Task;
 import com.karumi.dexter.Dexter;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -59,23 +54,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     /* Constants */
-    public static final long FASTEST_UPDATE_INTERVAL    = 60000; /* In milliseconds*/
-    public static final long UPDATE_INTERVAL            = 60000;  /* In milliseconds*/
-    public static final int LAUNCH_SOURCE_ON_RESUME     = 1;
-    public static final int LAUNCH_SOURCE_START         = 0;
-    public static final int REQUEST_LOCATION            = 199;
-    public static final int ERROR_GPS_OFF               = 10;
-    public static final int ERROR_PERMISSION_DENIED     = 20;
-    public static final int ERROR_DENIED_PERMANENTLY    = 30;
-    public static final int ERROR_CONNECTION_FAILED     = 40;
-    public static final int ERROR_INTERNET_UNAVAILABLE  = 50;
-    private static final String baseURL                 = "http://email.yaxroma.org/data.php";
-    public static final String WEATHER_KEY = "14694abc40a51e1b28c053fdea1faa06";
+    public static final long FASTEST_UPDATE_INTERVAL = 60000; /* In milliseconds*/
+    public static final long UPDATE_INTERVAL = 60000;  /* In milliseconds*/
+    public static final int LAUNCH_SOURCE_ON_RESUME = 1;
+    public static final int LAUNCH_SOURCE_START = 0;
+    public static final int REQUEST_LOCATION = 199;
+    public static final int ERROR_GPS_OFF = 10;
+    public static final int ERROR_PERMISSION_DENIED = 20;
+    public static final int ERROR_DENIED_PERMANENTLY = 30;
+    public static final int ERROR_CONNECTION_FAILED = 40;
+    public static final int ERROR_INTERNET_UNAVAILABLE = 50;
+    public static String TEST = "";
 
     /* Widgets */
     private TextView currentWeatherView;
     private TextView currentLocationView;
-    private TextView lastUpdateView;
     private View mainContent;
     private TextView errorTitleView;
     private ImageView errorIconView;
@@ -96,7 +89,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private int currentErrorState = 0;
 
     private Location currentLocation;
-    private String lastUpdateTime;
 
 
     @Override
@@ -203,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initData() {
         connectivityManager     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         currentLocationView     = findViewById(R.id.currentLocation);
-        lastUpdateView          = findViewById(R.id.lastUpdate);
         errorTitleView          = findViewById(R.id.errorTitle);
         buttonResolver          = findViewById(R.id.btnResolveError);
         errorIconView           = findViewById(R.id.errorIcon);
@@ -223,10 +214,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
                 currentLocation = locationResult.getLastLocation();
-                lastUpdateTime = DateFormat.getTimeInstance().format(new Date());
 
                 updateUI();
-                sendLocation(currentLocation);
             }
         };
 
@@ -311,24 +300,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateUI() {
         if (currentLocation != null) {
-            char lat = (char) currentLocation.getLatitude();
-            char lon = (char) currentLocation.getLongitude();
-
+            //String lon = new DecimalFormat("#0.0000").format(currentLocation.getLongitude());
+            String lat = String.valueOf(currentLocation.getLatitude());
+            String lon = String.valueOf(currentLocation.getLongitude());
+            String locate = lat + "," + lon;
+            Toast.makeText(MainActivity.this, locate, Toast.LENGTH_LONG).show();
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("https://samples.openweathermap.org/data/2.5")
+                    .baseUrl("https://api.darksky.net/forecast/")
                     .addConverterFactory(GsonConverterFactory.create())
                     .build();
 
             Api api = retrofit.create(Api.class);
-            Call<WearherData> call = api.getDataWeather(lat, lon, WEATHER_KEY);
+            Call<WearherData> call = api.getDataWeather(lat, lon);
             call.enqueue(new Callback<WearherData>() {
                 @Override
                 public void onResponse(Call<WearherData> call, retrofit2.Response<WearherData> response) {
                     WearherData wearherData = response.body();
 
                     currentLocationView.setText("Широта: " + currentLocation.getLatitude() + "\n" + "Долгота: " + currentLocation.getLongitude());
-                    lastUpdateView.setText("Последняя отправка: " + lastUpdateTime);
-                    currentLocationView.setText(wearherData.main.getTemp() + "C°");
+                    currentWeatherView.setText((((int)wearherData.getCurrently().getTemperature() - 32) * 5/9) + " С°");
                 }
 
                 @Override
@@ -339,19 +329,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             currentWeatherView.setVisibility(View.VISIBLE);
             currentLocationView.setVisibility(View.VISIBLE);
-            lastUpdateView.setVisibility(View.VISIBLE);
         } else {
             hideUI();
-        }
-    }
-
-    private void sendLocation(Location _curLocation) {
-        if(isNetworkUnavailable()){
-            stopLocationUpdates();
-            showErrorState(ERROR_INTERNET_UNAVAILABLE);
-        } else {
-            RequestQueue LocationSendRequestQueue = Volley.newRequestQueue(this);
-            LocationSendRequestQueue.add(new StringRequest(Request.Method.GET, baseURL + getRequest(_curLocation), responseListener, responseErrorListener));
         }
     }
 
@@ -427,8 +406,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void hideUI() {
         currentWeatherView.setVisibility(View.GONE);
-        currentLocationView.setVisibility(View.GONE);
-        lastUpdateView.setVisibility(View.GONE);
     }
 
     boolean isNetworkUnavailable() {
@@ -457,20 +434,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         return builder.toString();
     }
-
-    Response.Listener<String> responseListener = new Response.Listener<String>() {
-        @Override
-        public void onResponse(String response) {
-            Toast.makeText(getApplicationContext(), "Местоположение отправлено!", Toast.LENGTH_SHORT).show();
-        }
-    };
-
-    Response.ErrorListener responseErrorListener = new Response.ErrorListener() {
-        @Override
-        public void onErrorResponse(VolleyError error) {
-            stopLocationUpdates();
-            showErrorState(ERROR_CONNECTION_FAILED);
-        }
-    };
-
 }

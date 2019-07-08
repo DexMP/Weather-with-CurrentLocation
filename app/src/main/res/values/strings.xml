@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">weather</string>
+    <string name="app_name">Weather</string>
     <string name="error_gps_on_denied">Для работы приложения требуется включенный GPS!</string>
     <string name="turn_on_gps">Включить GPS</string>
     <string name="grant_permission">Предоставить разрешение</string>
