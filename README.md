@@ -1,2 +1,2 @@
-# Gpstag
-App for sending current fine location to a server.
+# DexMP
+App for get current location and weather.
