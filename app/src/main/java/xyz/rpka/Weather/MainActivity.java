@@ -69,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     /* Widgets */
     private TextView currentWeatherView;
     private TextView currentLocationView;
+    private TextView currentWindSpeedView;
+    private TextView currentHumidityView;
     private View mainContent;
     private TextView errorTitleView;
     private ImageView errorIconView;
@@ -195,6 +197,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void initData() {
         connectivityManager     = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         currentLocationView     = findViewById(R.id.currentLocation);
+        currentHumidityView     = findViewById(R.id.currentHumidity);
+        currentWindSpeedView    = findViewById(R.id.currentWindSpeed);
         errorTitleView          = findViewById(R.id.errorTitle);
         buttonResolver          = findViewById(R.id.btnResolveError);
         errorIconView           = findViewById(R.id.errorIcon);
@@ -304,7 +308,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             String lat = String.valueOf(currentLocation.getLatitude());
             String lon = String.valueOf(currentLocation.getLongitude());
             String locate = lat + "," + lon;
-            Toast.makeText(MainActivity.this, locate, Toast.LENGTH_LONG).show();
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl("https://api.darksky.net/forecast/")
                     .addConverterFactory(GsonConverterFactory.create())
@@ -319,6 +322,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
                     currentLocationView.setText("Широта: " + currentLocation.getLatitude() + "\n" + "Долгота: " + currentLocation.getLongitude());
                     currentWeatherView.setText((((int)wearherData.getCurrently().getTemperature() - 32) * 5/9) + " С°");
+                    currentHumidityView.setText("Влажность воздуха: " + (wearherData.getCurrently().getHumidity() * 100) + "%");
+                    currentWindSpeedView.setText("Скорость ветра: " + wearherData.getCurrently().getWindSpeed() + " м/с");
                 }
 
                 @Override
